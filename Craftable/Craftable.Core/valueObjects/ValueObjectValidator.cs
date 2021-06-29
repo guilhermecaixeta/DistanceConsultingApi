@@ -1,11 +1,12 @@
 ﻿using Craftable.Core.extensions;
 using Craftable.Core.validators;
+using Craftable.SharedKernel;
 using FluentValidation;
 using System;
 
 namespace Craftable.Core.valueObjects
 {
-    public abstract record BaseValueObject<T, V>
+    public abstract class ValueObjectValidator<T, V> : ValueObject
         where T : class
         where V : AbstractValidator<T>, new()
     {

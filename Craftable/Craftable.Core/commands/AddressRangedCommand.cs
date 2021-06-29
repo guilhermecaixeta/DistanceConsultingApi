@@ -1,8 +1,8 @@
 ﻿using Craftable.Core.extensions;
-using Craftable.Core.interfaces;
+using Craftable.Core.interfaces.CQRS;
 using Craftable.Core.validators;
 
-namespace Craftable.Core.aggregate.postcode.commands
+namespace Craftable.Core.commands
 {
     public class AddressRangedCommand : ICommand
     {

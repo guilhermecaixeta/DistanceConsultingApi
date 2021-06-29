@@ -1,4 +1,4 @@
-﻿using Craftable.Core.aggregate.postcode;
+﻿using Craftable.Core.entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Craftable.Infrastructure.data

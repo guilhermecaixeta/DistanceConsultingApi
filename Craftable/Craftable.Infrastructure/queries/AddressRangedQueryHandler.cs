@@ -1,8 +1,9 @@
-﻿using Craftable.Core.aggregate.postcode;
-using Craftable.Core.aggregate.postcode.queries;
+﻿using Craftable.Core.entities;
 using Craftable.Core.eventsResult;
 using Craftable.Core.extensions;
-using Craftable.Core.interfaces;
+using Craftable.Core.interfaces.CQRS;
+using Craftable.Core.interfaces.CQRS.queries;
+using Craftable.Core.queries;
 using Craftable.Core.valueObjects;
 using Craftable.Infrastructure.data;
 using Craftable.Infrastructure.facade;
@@ -18,15 +19,15 @@ using System.Threading.Tasks;
 namespace Craftable.Infrastructure.queries
 {
     public class AddressRangedQueryHandler :
-        IRequestHandlerAsync<AddressesQuery, IQueryResult<IReadOnlyList<PostcodeDTO>>>,
-        IRequestHandlerAsync<PostalCodeQuery, IQueryResult<PostcodeAddressRangedDTO>>
+        IPostalcodeListQueryHandler,
+        IPostalcodeQueryHandler
     {
-        private readonly IPostCodeFacade _postcodeFacade;
+        private readonly IPostCodeClient _postcodeClient;
         private readonly DbSet<AddressRegister> _addressRangedContext;
 
-        public AddressRangedQueryHandler(IPostCodeFacade postcodeFacade, CraftableContext context)
+        public AddressRangedQueryHandler(IPostCodeClient postcodeClient, CraftableContext context)
         {
-            _postcodeFacade = postcodeFacade;
+            _postcodeClient = postcodeClient;
             _addressRangedContext = context.Addresses;
         }
 
@@ -55,22 +56,21 @@ namespace Craftable.Infrastructure.queries
                 return new QueryResult<PostcodeAddressRangedDTO>(false, noticator.Errors, default);
             }
 
-            var isPostalCodeValid = await _postcodeFacade.ValidatePostalCodeAsync(handler.Code, cancellationToken);
-            if (!isPostalCodeValid)
-            {
-                throw new PostalCodeInvalidException();
-            }
+            var addressDTO = await GetAddressDTO(handler, cancellationToken);
 
+            var response = new QueryResult<PostcodeAddressRangedDTO>(true, default, addressDTO);
+            return response;
+        }
+
+        private async Task<PostcodeAddressRangedDTO> GetAddressDTO(PostalCodeQuery handler, CancellationToken cancellationToken)
+        {
             var hasPostCode = await _addressRangedContext.AnyAsync(address => address.Postcode == handler.Code, cancellationToken);
             var code = handler.Code;
-            var addressDTO = hasPostCode switch
+            return hasPostCode switch
             {
                 true => await GetAddressFromRepository(code, cancellationToken),
                 false => await GetAddressFromApi(code, cancellationToken)
             };
-
-            var response = new QueryResult<PostcodeAddressRangedDTO>(true, default, addressDTO);
-            return response;
         }
 
         private async Task<PostcodeAddressRangedDTO> GetAddressFromRepository(string code, CancellationToken cancellationToken)
@@ -88,10 +88,17 @@ namespace Craftable.Infrastructure.queries
         }
         private async Task<PostcodeAddressRangedDTO> GetAddressFromApi(string code, CancellationToken cancellationToken)
         {
-            var address = await _postcodeFacade.GetAddressByPostalCodeAsync(code, cancellationToken);
+            var isPostalCodeValid = await _postcodeClient.ValidatePostalCodeAsync(code, cancellationToken);
+
+            if (!isPostalCodeValid)
+            {
+                throw new PostalCodeInvalidException();
+            }
+
+            var address = await _postcodeClient.GetAddressByPostalCodeAsync(code, cancellationToken);
 
             var source = new Coordinates(address.Longitude, address.Latitude);
-            var distance = await _postcodeFacade.GetDistanceFromCoordinatesAsync(source, HeathrowAirpot.Coordinates, cancellationToken);
+            var distance = await _postcodeClient.GetDistanceFromCoordinatesAsync(source, HeathrowAirpot.Coordinates, cancellationToken);
 
             var addressDTO = new PostcodeAddressRangedDTO
             {

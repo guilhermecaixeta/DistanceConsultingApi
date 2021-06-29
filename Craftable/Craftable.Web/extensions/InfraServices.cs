@@ -25,7 +25,7 @@ namespace Craftable.Web.extensions
             .AddPolicyHandler(AccessPolicies.CreateRetryPolicy())
             .AddPolicyHandler(AccessPolicies.CreateCircuitBreakerPolicy());
 
-            services.AddScoped<IPostCodeFacade, PostCodeFacade>();
+            services.AddScoped<IPostCodeClient, PostCodeClient>();
 
             return services;
         }

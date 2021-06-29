@@ -1,9 +1,10 @@
-﻿using Craftable.Core.aggregate.postcode.commands;
-using Craftable.Core.aggregate.postcode.queries;
-using Craftable.Core.interfaces;
+﻿using Craftable.Core.commands;
+using Craftable.Core.interfaces.CQRS;
+using Craftable.Core.interfaces.CQRS.commands;
+using Craftable.Core.interfaces.CQRS.queries;
 using Craftable.Core.interfaces.services;
+using Craftable.Core.queries;
 using Craftable.SharedKernel.DTO;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,29 +12,15 @@ namespace Craftable.Core.services
 {
     public class PostcodeServiceAsync : IPostcodeServiceAsync
     {
-        private readonly IRequestHandlerAsync<AddressesQuery, IQueryResult<IReadOnlyList<PostcodeDTO>>> _addressRangedQuery;
-        private readonly IRequestHandlerAsync<PostalCodeQuery, IQueryResult<PostcodeAddressRangedDTO>> _postalCodeQuery;
-        private readonly IRequestHandlerAsync<AddressRangedCommand, ICommandResult> _addressRangedCommand;
+        private readonly IPostalcodeQueryHandler _postalCodeQuery;
+        private readonly IPostalcodeCommandHandler _addressRangedCommand;
 
         public PostcodeServiceAsync(
-            IRequestHandlerAsync<AddressesQuery, IQueryResult<IReadOnlyList<PostcodeDTO>>> addressRangedQuery,
-            IRequestHandlerAsync<PostalCodeQuery, IQueryResult<PostcodeAddressRangedDTO>> postalCodeQuery,
-            IRequestHandlerAsync<AddressRangedCommand, ICommandResult> addressRangedCommand)
+            IPostalcodeQueryHandler postalCodeQuery,
+            IPostalcodeCommandHandler addressRangedCommand)
         {
-            _addressRangedQuery = addressRangedQuery;
             _postalCodeQuery = postalCodeQuery;
             _addressRangedCommand = addressRangedCommand;
-        }
-
-        public async Task<ResultDTO<IReadOnlyList<PostcodeDTO>>> GetPostcodesRangedsAsync(CancellationToken cancellationToken)
-        {
-            var query = new AddressesQuery();
-            var response = await _addressRangedQuery.HandleAsync(query, cancellationToken);
-            if (!response.Success)
-            {
-                return new ResultDTO<IReadOnlyList<PostcodeDTO>>(default, false, response.Errors);
-            }
-            return new ResultDTO<IReadOnlyList<PostcodeDTO>>(response.Data, response.Success, response.Errors);
         }
 
         public async Task<ResultDTO<PostcodeRangedDTO>> GetPostcodeRangedAsync(string postcode, CancellationToken cancellationToken)

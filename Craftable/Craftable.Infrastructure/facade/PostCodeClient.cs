@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Craftable.Infrastructure.facade
 {
-    public class PostCodeFacade : IPostCodeFacade
+    public class PostCodeClient : IPostCodeClient
     {
         private readonly IPostCodeApi _postCodeApi;
 
-        public PostCodeFacade(IPostCodeApi postCodeApi)
+        public PostCodeClient(IPostCodeApi postCodeApi)
         {
             _postCodeApi = postCodeApi;
         }
@@ -53,7 +53,7 @@ namespace Craftable.Infrastructure.facade
         {
             if (response.Status != 200)
             {
-                throw new Exception("Error to retrieve the data");
+                throw new Exception($"Error to retrieve the data \n Status Code: {response.Status} \n Message: {response.Result}");
             }
         }
 

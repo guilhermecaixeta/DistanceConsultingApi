@@ -1,4 +1,4 @@
-﻿using Craftable.Core.aggregate.postcode.queries;
+﻿using Craftable.Core.queries;
 using FluentValidation;
 
 namespace Craftable.Core.validators

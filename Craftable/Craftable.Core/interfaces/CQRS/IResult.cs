@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Craftable.Core.interfaces
+namespace Craftable.Core.interfaces.CQRS
 {
     public interface IResult<out T> : IResult
     {

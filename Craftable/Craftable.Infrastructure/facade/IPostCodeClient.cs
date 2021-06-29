@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Craftable.Infrastructure.facade
 {
-    public interface IPostCodeFacade
+    public interface IPostCodeClient
     {
         Task<Distance> GetDistanceFromCoordinatesAsync(Coordinates source, Coordinates destination, CancellationToken cancellationToken);
 

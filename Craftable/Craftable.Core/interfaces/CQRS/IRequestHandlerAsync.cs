@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Craftable.Core.interfaces
+namespace Craftable.Core.interfaces.CQRS
 {
     public interface IRequestHandlerAsync<in TEvent, TResult>
         where TEvent : IEvent

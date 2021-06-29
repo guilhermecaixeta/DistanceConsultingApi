@@ -4,7 +4,7 @@ using Craftable.Core.valueObjects;
 using Craftable.SharedKernel;
 using System;
 
-namespace Craftable.Core.aggregate.postcode
+namespace Craftable.Core.entities
 {
     public class AddressRegister : BaseEntity
     {

@@ -1,4 +1,4 @@
-﻿using Craftable.Core.aggregate.postcode.commands;
+﻿using Craftable.Core.commands;
 using FluentValidation;
 
 namespace Craftable.Core.validators

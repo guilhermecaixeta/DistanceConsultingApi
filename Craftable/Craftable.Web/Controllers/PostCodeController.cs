@@ -1,4 +1,7 @@
-﻿using Craftable.Web.DTO;
+﻿using Craftable.Core.interfaces.CQRS.queries;
+using Craftable.Core.interfaces.services;
+using Craftable.Core.queries;
+using Craftable.Web.DTO;
 using Craftable.Web.services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +16,18 @@ namespace Craftable.Web.Controllers
     [ApiController]
     public class PostCodeController : ControllerBase
     {
-        private readonly IAddressAdapter _addressAdapter;
+        private readonly IAddressMapperService _addressMapperService;
+        private readonly IPostcodeServiceAsync _postcodeServiceAsync;
+        private readonly IPostalcodeListQueryHandler _postalcodeListQueryHandler;
 
-        public PostCodeController(IAddressAdapter addressService)
+        public PostCodeController(
+            IAddressMapperService addressMapperService,
+            IPostcodeServiceAsync postcodeServiceAsync,
+            IPostalcodeListQueryHandler postalcodeListQueryHandler)
         {
-            _addressAdapter = addressService;
+            _addressMapperService = addressMapperService;
+            _postcodeServiceAsync = postcodeServiceAsync;
+            _postalcodeListQueryHandler = postalcodeListQueryHandler;
         }
 
         [HttpPost]
@@ -30,18 +40,20 @@ namespace Craftable.Web.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var response = await _addressAdapter.GetAddressByPostalCode(request.Code, cancellationToken);
+            var resultDTO = await _postcodeServiceAsync.GetPostcodeRangedAsync(request.Code, cancellationToken);
+            var response = _addressMapperService.MappingPostcode(resultDTO);
             return ValidateResponse(response, nameof(GetLastPostcodesHistoric));
         }
 
-        [HttpGet("historic")]
+        [HttpGet]
         [ProducesResponseType(typeof(ResponseDTO<IReadOnlyList<PostalcodeDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseDTO<IReadOnlyList<PostalcodeDTO>>), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseDTO<IReadOnlyList<PostalcodeDTO>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetLastPostcodesHistoric(CancellationToken cancellationToken)
         {
-            var response = await _addressAdapter.GetPostcodeHistoric(cancellationToken);
-
+            var query = new AddressesQuery();
+            var queryResult = await _postalcodeListQueryHandler.HandleAsync(query, cancellationToken);
+            var response = _addressMapperService.MappingPostcodeList(queryResult);
             return ValidateResponse(response);
         }
 

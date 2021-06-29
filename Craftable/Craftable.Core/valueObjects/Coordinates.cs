@@ -1,8 +1,9 @@
 ﻿using Craftable.Core.validators;
+using System.Collections.Generic;
 
 namespace Craftable.Core.valueObjects
 {
-    public record Coordinates : BaseValueObject<Coordinates, CoordinatesValidator>
+    public class Coordinates : ValueObjectValidator<Coordinates, CoordinatesValidator>
     {
         public Coordinates(double longitude, double latitude)
         {
@@ -13,5 +14,11 @@ namespace Craftable.Core.valueObjects
 
         public double Longitude { get; init; }
         public double Latitude { get; init; }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Latitude;
+            yield return Longitude;
+        }
     }
 }

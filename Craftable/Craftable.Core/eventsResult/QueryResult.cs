@@ -1,4 +1,4 @@
-﻿using Craftable.Core.interfaces;
+﻿using Craftable.Core.interfaces.CQRS;
 using System.Collections.Generic;
 
 namespace Craftable.Core.eventsResult

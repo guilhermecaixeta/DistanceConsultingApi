@@ -1,7 +1,7 @@
-﻿using Craftable.Core.interfaces;
+﻿using Craftable.Core.interfaces.CQRS;
 using Craftable.Core.validators;
 
-namespace Craftable.Core.aggregate.postcode.queries
+namespace Craftable.Core.queries
 {
     public class AddressesQuery : IQuery
     {

@@ -1,4 +1,6 @@
-﻿using Craftable.Core.interfaces.services;
+﻿using Craftable.Core.interfaces.CQRS;
+using Craftable.Core.interfaces.services;
+using Craftable.SharedKernel.DTO;
 using Craftable.SharedKernel.exceptions;
 using Craftable.Web.DTO;
 using System.Collections.Generic;
@@ -10,30 +12,12 @@ using System.Threading.Tasks;
 
 namespace Craftable.Web.services
 {
-    public class AddressAdapter : IAddressAdapter
+    public class AddressMapperService : IAddressMapperService
     {
-        private readonly IPostcodeServiceAsync serviceAsync;
 
-        public AddressAdapter(IPostcodeServiceAsync serviceAsync)
+        public ResponseDTO<PostcodeDistanceDTO> MappingPostcode(ResultDTO<PostcodeRangedDTO> resultDTO)
         {
-            this.serviceAsync = serviceAsync;
-        }
-
-        public async Task<ResponseDTO<PostcodeDistanceDTO>> GetAddressByPostalCode(string code, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrEmpty(code))
-            {
-                throw new PostalCodeInvalidException();
-            }
-
-            var queryResult = await serviceAsync.GetPostcodeRangedAsync(code, cancellationToken);
-
-            if (!queryResult.Success)
-            {
-                return GetErrorResponse<PostcodeDistanceDTO>(queryResult.Errors);
-            }
-
-            var result = queryResult.Data;
+            var result = resultDTO.Data;
             var data = new PostcodeDistanceDTO
             {
                 PostalCode = result.Code,
@@ -46,9 +30,8 @@ namespace Craftable.Web.services
             return ResponseDTO;
         }
 
-        public async Task<ResponseDTO<IReadOnlyList<PostalcodeDTO>>> GetPostcodeHistoric(CancellationToken cancellationToken)
+        public ResponseDTO<IReadOnlyList<PostalcodeDTO>> MappingPostcodeList(IQueryResult<IReadOnlyList<PostcodeDTO>> queryResult)
         {
-            var queryResult = await serviceAsync.GetPostcodesRangedsAsync(cancellationToken);
 
             if (!queryResult.Success)
             {
