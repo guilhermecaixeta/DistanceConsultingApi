@@ -41,7 +41,7 @@ namespace Craftable.Web.services
             var addresses = queryResult.Data.Select(address => new PostalcodeDTO
             {
                 Code = address.Code,
-                Date = address.Date.ToString("d", CultureInfo.InvariantCulture)
+                Date = address.Date.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)
             });
 
             if (!addresses.Any())
