@@ -1,6 +1,6 @@
-﻿using Craftable.Core.interfaces.Repository;
-using Craftable.Infrastructure.data;
+﻿using Craftable.Infrastructure.data;
 using Craftable.SharedKernel;
+using Craftable.SharedKernel.interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

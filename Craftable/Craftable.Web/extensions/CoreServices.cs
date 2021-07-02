@@ -1,11 +1,9 @@
-﻿using Craftable.Core.entities.handlers;
-using Craftable.Core.interfaces.CQRS.commands;
-using Craftable.Core.interfaces.CQRS.queries;
-using Craftable.Core.interfaces.Repository;
-using Craftable.Core.interfaces.services;
+﻿using Craftable.Core.interfaces.command;
+using Craftable.Core.interfaces.queries;
 using Craftable.Core.services;
 using Craftable.Infrastructure.queries;
 using Craftable.Infrastructure.repositories;
+using Craftable.SharedKernel.interfaces.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Craftable.Web.extensions
@@ -13,29 +11,37 @@ namespace Craftable.Web.extensions
     public static class CoreServices
     {
         /// <summary>
-        /// Adds the core services.
+        /// Adds the core use cases.
         /// </summary>
         /// <param name="services">The services.</param>
         /// <returns></returns>
-        public static IServiceCollection AddCoreServices(this IServiceCollection services)
+        public static IServiceCollection AddCoreUseCases(this IServiceCollection services)
         {
-            services.AddScoped<IPostcodeServiceAsync, PostcodeServiceAsync>();
+            services.AddScoped<IGetDistanceFromPostCodeUseCaseAsync, GetDistanceFromPostCodeInteractorAsync>();
             return services;
         }
 
+        /// <summary>
+        /// Adds the core repositories.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <returns></returns>
         public static IServiceCollection AddCoreRepositories(this IServiceCollection services)
         {
-            services.AddSingleton<IPostCodeAddressRepository, PostCodeAddressRepositoryAsync>();
+            services.AddScoped(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
             return services;
         }
 
-        public static IServiceCollection AddCoreHandlers(this IServiceCollection services)
+        /// <summary>
+        /// Adds the core handlers.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <returns></returns>
+        public static IServiceCollection AddCoreQueries(this IServiceCollection services)
         {
-            services.AddSingleton<AddressRangedCommandHandler>();
-            services.AddSingleton<AddressRangedQueryHandler>();
-            services.AddSingleton<IPostalcodeQueryHandler>(opt => opt.GetService<AddressRangedQueryHandler>());
-            services.AddSingleton<IPostalcodeListQueryHandler>(opt => opt.GetService<AddressRangedQueryHandler>());
-            services.AddSingleton<IPostalcodeCommandHandler>(opt => opt.GetService<AddressRangedCommandHandler>());
+            services.AddScoped<AddressRangedQueryHandler>();
+            services.AddScoped<IPostalcodeQueryHandler>(opt => opt.GetService<AddressRangedQueryHandler>());
+            services.AddScoped<IPostalcodeListQueryHandler>(opt => opt.GetService<AddressRangedQueryHandler>());
             return services;
         }
     }

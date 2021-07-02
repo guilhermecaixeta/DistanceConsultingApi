@@ -12,7 +12,7 @@ namespace Craftable.Web.extensions
     {
         public static IServiceCollection AddEFCoreDataProvider(this IServiceCollection services)
         {
-            services.AddDbContext<CraftableContext>(ServiceLifetime.Singleton);
+            services.AddDbContext<CraftableContext>();
             return services;
         }
 
@@ -25,7 +25,7 @@ namespace Craftable.Web.extensions
             .AddPolicyHandler(AccessPolicies.CreateRetryPolicy())
             .AddPolicyHandler(AccessPolicies.CreateCircuitBreakerPolicy());
 
-            services.AddSingleton<IPostCodeClient, PostCodeClient>();
+            services.AddScoped<IPostCodeClient, PostCodeClient>();
 
             return services;
         }

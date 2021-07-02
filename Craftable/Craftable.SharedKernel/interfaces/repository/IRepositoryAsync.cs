@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Craftable.Core.interfaces.Repository
+namespace Craftable.SharedKernel.interfaces.Repository
 {
     public interface IRepositoryAsync<T>
         where T : BaseEntity

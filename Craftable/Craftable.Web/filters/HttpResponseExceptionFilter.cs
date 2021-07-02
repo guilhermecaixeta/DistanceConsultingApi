@@ -18,7 +18,7 @@ namespace Craftable.Web.filters
                 PostalCodeInvalidException => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError
             };
-            var response = new ResultDTO<string>(context.Exception.Message, false, new List<string> { context.Exception.Message });
+            var response = new ResultDTO<string>(false, new List<string> { context.Exception.Message }, context.Exception.Message);
 
             context.Result = new ObjectResult(response)
             {

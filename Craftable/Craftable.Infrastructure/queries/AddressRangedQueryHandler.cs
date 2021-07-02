@@ -1,14 +1,13 @@
 ﻿using Craftable.Core.entities;
-using Craftable.Core.eventsResult;
 using Craftable.Core.extensions;
-using Craftable.Core.interfaces.CQRS;
-using Craftable.Core.interfaces.CQRS.queries;
+using Craftable.Core.interfaces.queries;
 using Craftable.Core.queries;
 using Craftable.Core.valueObjects;
 using Craftable.Infrastructure.data;
 using Craftable.Infrastructure.facade;
 using Craftable.SharedKernel.DTO;
 using Craftable.SharedKernel.exceptions;
+using Craftable.SharedKernel.interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace Craftable.Infrastructure.queries
             _addressRangedContext = context.Addresses;
         }
 
-        public async Task<IQueryResult<IReadOnlyList<PostcodeDTO>>> HandleAsync(AddressesQuery handler, CancellationToken cancellationToken)
+        public async Task<IResult<IReadOnlyList<PostcodeDTO>>> HandlerAsync(AddressesQuery handler, CancellationToken cancellationToken)
         {
             var adresses = _addressRangedContext.AsQueryable();
             var lastAddresses = await adresses
@@ -43,22 +42,22 @@ namespace Craftable.Infrastructure.queries
                     Date = a.Date
                 }).ToListAsync(cancellationToken);
 
-            var addressResult = new QueryResult<IReadOnlyList<PostcodeDTO>>(true, default, lastAddresses);
+            var addressResult = new ResultDTO<IReadOnlyList<PostcodeDTO>>(true, default, lastAddresses);
 
             return addressResult;
         }
 
-        public async Task<IQueryResult<PostcodeAddressRangedDTO>> HandleAsync(PostalCodeQuery handler, CancellationToken cancellationToken)
+        public async Task<IResult<PostcodeAddressRangedDTO>> HandlerAsync(PostalCodeQuery handler, CancellationToken cancellationToken)
         {
             var noticator = handler.ValidateEvent();
             if (!noticator.IsValid)
             {
-                return new QueryResult<PostcodeAddressRangedDTO>(false, noticator.Errors, default);
+                return new ResultDTO<PostcodeAddressRangedDTO>(false, noticator.Errors, default);
             }
 
             var addressDTO = await GetAddressDTO(handler, cancellationToken);
 
-            var response = new QueryResult<PostcodeAddressRangedDTO>(true, default, addressDTO);
+            var response = new ResultDTO<PostcodeAddressRangedDTO>(true, default, addressDTO);
             return response;
         }
 

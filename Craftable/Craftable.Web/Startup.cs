@@ -28,12 +28,12 @@ namespace Craftable.Web
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Craftable.Web", Version = "v1" });
             });
 
-            services.AddScoped<IAddressMapperService, AddressMapperService>();
+            services.AddScoped<IPostcodeService, PostcodeService>();
 
             services
                 .AddCoreRepositories()
-                .AddCoreHandlers()
-                .AddCoreServices();
+                .AddCoreQueries()
+                .AddCoreUseCases();
 
             services
                 .AddEFCoreDataProvider()
