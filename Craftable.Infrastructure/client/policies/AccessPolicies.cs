@@ -6,7 +6,7 @@ using Polly.Timeout;
 using System;
 using System.Net.Http;
 
-namespace Craftable.Infrastructure.apiPolicies
+namespace Craftable.Infrastructure.client.policies
 {
     public static class AccessPolicies
     {

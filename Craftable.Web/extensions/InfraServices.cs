@@ -1,7 +1,7 @@
-﻿using Craftable.Infrastructure.apiPolicies;
+﻿using Craftable.Infrastructure.client.policies;
+using Craftable.Infrastructure.client.postcode;
+using Craftable.Infrastructure.client.postcode.api;
 using Craftable.Infrastructure.data;
-using Craftable.Infrastructure.facade;
-using Craftable.Infrastructure.refitClients;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;

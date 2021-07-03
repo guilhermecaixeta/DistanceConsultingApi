@@ -1,9 +1,9 @@
-﻿using Craftable.Infrastructure.models;
+﻿using Craftable.Infrastructure.client.postcode.models;
 using Refit;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Craftable.Infrastructure.refitClients
+namespace Craftable.Infrastructure.client.postcode.api
 {
     public interface IPostCodeApi
     {

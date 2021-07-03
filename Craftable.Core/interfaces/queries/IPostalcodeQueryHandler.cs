@@ -1,5 +1,4 @@
-﻿using Craftable.Core.interfaces.CQRS;
-using Craftable.Core.queries;
+﻿using Craftable.Core.queries;
 using Craftable.SharedKernel.DTO;
 using Craftable.SharedKernel.interfaces;
 

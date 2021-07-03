@@ -3,8 +3,8 @@ using Craftable.Core.extensions;
 using Craftable.Core.interfaces.queries;
 using Craftable.Core.queries;
 using Craftable.Core.valueObjects;
+using Craftable.Infrastructure.client.postcode;
 using Craftable.Infrastructure.data;
-using Craftable.Infrastructure.facade;
 using Craftable.SharedKernel.DTO;
 using Craftable.SharedKernel.exceptions;
 using Craftable.SharedKernel.interfaces;
@@ -63,8 +63,8 @@ namespace Craftable.Infrastructure.queries
 
         private async Task<PostcodeAddressRangedDTO> GetAddressDTO(PostalCodeQuery handler, CancellationToken cancellationToken)
         {
-            var hasPostCode = await _addressRangedContext.AnyAsync(address => address.Postcode == handler.Code, cancellationToken);
             var code = handler.Code;
+            var hasPostCode = await _addressRangedContext.AnyAsync(address => code == handler.Code, cancellationToken);
             return hasPostCode switch
             {
                 true => await GetAddressFromRepository(code, cancellationToken),
@@ -85,6 +85,7 @@ namespace Craftable.Infrastructure.queries
                 DistanceFromHeathrowAirportInMiles = addressRegister.Distance.DistanceInMiles
             };
         }
+
         private async Task<PostcodeAddressRangedDTO> GetAddressFromApi(string code, CancellationToken cancellationToken)
         {
             var isPostalCodeValid = await _postcodeClient.ValidatePostalCodeAsync(code, cancellationToken);

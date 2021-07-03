@@ -1,9 +1,9 @@
 ﻿using Craftable.Core.valueObjects;
-using Craftable.Infrastructure.models;
+using Craftable.Infrastructure.client.postcode.models;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Craftable.Infrastructure.facade
+namespace Craftable.Infrastructure.client.postcode
 {
     public interface IPostCodeClient
     {

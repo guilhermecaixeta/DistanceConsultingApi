@@ -1,6 +1,6 @@
 ﻿using Refit;
 
-namespace Craftable.Infrastructure.models
+namespace Craftable.Infrastructure.client.postcode.models
 {
     public class PostcodeAddress
     {
